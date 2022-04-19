@@ -1,19 +1,19 @@
-import math 
+import math
 import copy
-import os 
-import json 
-import time 
+import os
+import json
+import time
 import datetime
-import glob 
-import natsort 
+import glob
+import natsort
 import cv2
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import numpy as np
 from argparse import ArgumentParser
 
 import torch
-import torch.nn as nn 
-import torch.nn.functional as F 
+import torch.nn as nn
+import torch.nn.functional as F
 from torchinfo import summary
 
 
@@ -39,7 +39,7 @@ args, unknown_args = parser.parse_known_args()
 with open("{}/args.json".format(log_dir), mode="w") as f:
     json.dump(args.__dict__, f, indent=4)
 
-    
+
 # mainの定数
 CANVAS_SIZE = 224
 CANVAS_H = CANVAS_SIZE
@@ -71,7 +71,7 @@ def binomial_coefficient(n, k):
 # B_{n,i}(t), tは媒介変数
 def bernstein_basis_function(n, i, t):
     return binomial_coefficient(n, i) * np.power(t, i) * np.power((1 - t), n - i)
-    
+
 # tにおけるベジェ曲線のある一点
 # list_control_points: control_pointsのタプルのリスト
 # num_control_points: 制御点の数．この数引く１がベジェ曲線の次数．
@@ -84,9 +84,9 @@ def bernstein_polynomials(list_control_points, t):
         tmp_x += bernstein_basis_function(num_control_points - 1, i, t) * list_control_points[i][0]
         tmp_y += bernstein_basis_function(num_control_points - 1, i, t) * list_control_points[i][1]
     return tmp_x, tmp_y
-    
+
 # len(list_control_points)-1次のベジェ曲線を描画する関数．
-# list_control_points: 制御点のリスト    
+# list_control_points: 制御点のリスト
 # num_t_split: 曲線の描画処理を何ステップ分割するか
 def draw_bezier_curve(tmp_canvas_np_cv, list_control_points, num_t_split, color=(0,0,0), radius=5):
     for i in range(num_t_split):
@@ -142,7 +142,7 @@ for j in range(NUM_STROKES):
     # normalized_tmp_canvas_np_cv = tmp_canvas_np_cv / 255.0
     # normalized_tmp_canvas_np_cv = normalized_tmp_canvas_np_cv.astype(np.float32)
     # show_img(normalized_tmp_canvas_np_cv) # 0~1の範囲でも描画してくれる．
-    # plt.show() 
+    # plt.show()
 # print(image_bezier_np_cv[150, :, 0])
 # print(image_bezier_np_cv.dtype)
 image_bezier_np_plt = cv2.cvtColor(image_bezier_np_cv, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
@@ -158,7 +158,7 @@ criterion = nn.MSELoss()
 neural_renderer = NeuralRenderer(NUM_CONTROL_POINTS)
 summary(neural_renderer, input_size=(BATCH_SIZE,NUM_CONTROL_POINTS*2), col_names=["input_size", "output_size", "num_params", "kernel_size", "mult_adds"], verbose=1)
 optimizer = torch.optim.Adam(neural_renderer.parameters(), lr=3e-6)
-batch_size = BATCH_SIZE 
+batch_size = BATCH_SIZE
 if args.DEVICE is None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("device = {}".format(device))
@@ -170,12 +170,12 @@ if device.type == "cuda": # device == "cuda" では，Trueになりえないの�
 
 val_loss_min = np.inf
 cnt = 0
-cnt_increse_agein = 0 # loss_minよりもlossが上回ったエピソードの回数
-total_training_steps = TOTAL_TRAINING_STEPS 
+cnt_increse_again = 0 # loss_minよりもlossが上回ったエピソードの回数
+total_training_steps = TOTAL_TRAINING_STEPS
 time_at_start = time.time()
 
 while cnt <= total_training_steps:
-    neural_renderer.train() 
+    neural_renderer.train()
 
     batch_points = [] # 入力データ
     batch_images = [] # ラベルデータ
@@ -221,8 +221,8 @@ while cnt <= total_training_steps:
     else:
         lr = 1e-6
     for param_group in optimizer.param_groups:
-        param_group["lr"] = lr 
-    
+        param_group["lr"] = lr
+
     # validation
     if cnt % 500 == 0:
         tmp_time = time.time()
@@ -237,7 +237,7 @@ while cnt <= total_training_steps:
         plt.imsave(log_dir+"/target_image_cnt={}.jpg".format(cnt), target_image)
         plt.imsave(log_dir+"/pred_image_cnt={}.jpg".format(cnt), pred_image)
         if val_loss < val_loss_min:
-            cnt_increse_agein = 0
+            cnt_increse_again = 0
             val_loss_min = val_loss
             if device.type == "cuda":
                 neural_renderer.cpu()
@@ -245,13 +245,13 @@ while cnt <= total_training_steps:
             if device.type == "cuda":
                 neural_renderer.cuda()
         if val_loss >= val_loss_min:
-            cnt_increse_agein += 1 
-        if cnt_increse_agein >= 1000: 
+            cnt_increse_again += 1
+        if cnt_increse_again >= 1000: 
             print("training finished.")
-            break 
-                
+            break
+
     cnt += 1
-    
+
 # 訓練結果の可視化
 
 
@@ -262,7 +262,7 @@ path_neural_renderer_state_dict = natsort.natsorted(glob.glob(log_dir+"/neural_r
 print("path_neural_renderer_state_dict = {}".format(path_neural_renderer_state_dict))
 neural_renderer = NeuralRenderer(NUM_CONTROL_POINTS)
 neural_renderer.load_state_dict(torch.load(path_neural_renderer_state_dict))
-neural_renderer.eval() 
+neural_renderer.eval()
 
 target_image_np_cv = np.ones((CANVAS_H, CANVAS_W, CANVAS_C), dtype=np.uint8)*255 # bezier描画関数による描画用．
 dict_pred_images = {} # neural_renderer描画用．
@@ -285,7 +285,7 @@ for j in range(NUM_STROKES):
 tmp_sum_of_strokes = torch.tensor(np.zeros((1, CANVAS_W, CANVAS_H, CANVAS_C), dtype=np.float32))
 for j in range(NUM_STROKES):
     print("stroke_{}: {}".format(j, dict_pred_images["stroke_{}".format(j)][0, 150, :3, 0]))
-    tmp_sum_of_strokes += (1 - dict_pred_images["stroke_{}".format(j)]) # ストローク部分を抽出し，足し合わせるために，0~1を反転させ，blackを1とする．  
+    tmp_sum_of_strokes += (1 - dict_pred_images["stroke_{}".format(j)]) # ストローク部分を抽出し，足し合わせるために，0~1を反転させ，blackを1とする．
     print("tmp_sum_of_strokes = {}".format(tmp_sum_of_strokes.detach().numpy().copy()[0, 150, :3, 0]))
 tmp_sum_of_strokes = torch.sigmoid((tmp_sum_of_strokes - 0.5) * 2)
 print("tmp_sum_of_strokes = {}".format(tmp_sum_of_strokes.detach().numpy().copy()[0, 150, :3, 0]))
