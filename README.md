@@ -9,4 +9,12 @@
 *   CLIPasso応用_感情認識_Master.ipynb - colab環境用。FER-2013データセットで感情認識モデルの性能を確かめた。CLIPasso応用としての感情認識タスクのマスターファイル。  
 *   （メモ）saliency map実装についてはneural rendererスケッチ生成コードと同様のため省略いたします。  
 
-# 感情認識、saliency mapについて、参考にしたブログ、コード、文献など
+# 参考にしたブログ、コード、文献など
+### CLIPasso, saliency map
+*   論文/コード [CLIPasso](https://clipasso.github.io/clipasso/) 
+*   論文 [Learning Transferable Visual Models From Natural Language Supervision](https://cdn.openai.com/papers/Learning_Transferable_Visual_Models_From_Natural_Language_Supervision.pdf)
+*   ブログ [論文解説】自然言語処理と画像処理の融合 – OpenAI 『CLIP』を理解する(1)](https://data-analytics.fun/2021/03/24/understanding-openai-clip/)
+
+### 感情認識
+*   データセット [FER-2013](https://www.kaggle.com/datasets/msambare/fer2013)
+*   コード [「少ないデータで転移学習を用いて画像内の表情を分類する」](https://github.com/zarakima/face-classification)  
