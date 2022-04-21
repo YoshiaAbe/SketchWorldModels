@@ -2,6 +2,11 @@
 
 
 
+*   CLIPassoWithNeuralRenderer_saliencymap_smallradius.ipynb - Neural rendererを使用して，CLIPasso全体を動かすためのファイル
+*   make_neural_renderer_1.py - Neural rendererを訓練するためのファイル
+
+
+
 # 参考にした論文・github・ブログ等
 CLIPasso  
 bibtex:  
