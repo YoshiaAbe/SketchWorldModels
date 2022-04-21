@@ -14,6 +14,8 @@
 *   論文/コード [CLIPasso](https://clipasso.github.io/clipasso/) 
 *   論文 [Learning Transferable Visual Models From Natural Language Supervision](https://cdn.openai.com/papers/Learning_Transferable_Visual_Models_From_Natural_Language_Supervision.pdf)
 *   ブログ [論文解説】自然言語処理と画像処理の融合 – OpenAI 『CLIP』を理解する(1)](https://data-analytics.fun/2021/03/24/understanding-openai-clip/)
+*   ブログ [Saliency Mapを使って画像を良い感じに切り抜くAIを作った](https://qiita.com/ttyszk/items/833d3753248bbc8a211f)
+*   ブログ [Saliency Mapを使って有名な絵画を分析してみる](https://qiita.com/ryota765/items/7a5941f7a80ce083f6fb)
 
 ### 感情認識
 *   データセット [FER-2013](https://www.kaggle.com/datasets/msambare/fer2013)
